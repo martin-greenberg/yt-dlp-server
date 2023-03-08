@@ -32,15 +32,16 @@ app.get('/v1/video', async (req, res) => {
 app.get('/watch', async (req, res) => {
     try {
         const v = req.query.v as string;
+        const u = req.query.u as string;
         const options = req.query.options as string;
-        if(!v){
+        let videoUrl;
+        if (v || u) {
+            videoUrl = await YoutubeDl.getVideoUrl(v || u, options, ['url'], !!u);
+        } else {
             res.status(400);
-            res.send('Missing video id!');
+            res.send('Missing video ID or URL');
             return;
         }
-        // let metadata = await YoutubeDl.getVideoMetadata(v, options, ['url']);
-        // res.redirect(metadata.url);
-        let videoUrl = await YoutubeDl.getVideoUrl(v, options, ['url']);
         res.redirect(videoUrl);
     } catch (e) {
         console.error(e)

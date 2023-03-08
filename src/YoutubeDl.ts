@@ -2,8 +2,7 @@ import { ExecException } from "child_process";
 const { exec } = require("child_process");
 const path = require('path');
 
-const isWin = process.platform === "win32";
-const bin = path.resolve('tools/bin/youtube-dl' +(isWin ? '.exe' : ''));
+const bin = 'yt-dlp';
 
 export class YoutubeDl {
     public static async getVideoMetadata(url: string, options?: string, schema?: string[]) {
@@ -27,9 +26,17 @@ export class YoutubeDl {
             });
         });
     }
-    public static async getVideoUrl(url: string, options?: string, schema?: string[]) {
-        options = '-f mp4';
-        const command = `${bin} ${options} --get-url https://www.youtube.com/watch?v=${url}`;
+
+    public static async getVideoUrl(url: string, options?: string, schema?: string[], isEncoded?: boolean) {
+	options = '-f mp4';
+	let finalUrl = url;
+	if (isEncoded) {
+            let bufferObj = Buffer.from(finalUrl, "base64");
+            finalUrl = bufferObj.toString("utf8");
+        } else {
+            finalUrl = `https://www.youtube.com/watch?v=${finalUrl}`;
+        }
+        const command = `${bin} ${options} --get-url ${finalUrl}`;
         return await new Promise<any>((resolve, reject) => {
             exec(command, (error: ExecException | null, stdout: string, stderr: string) => {
                 if(error) {

@@ -16,7 +16,9 @@ npm start
 ```
 GET /watch?v=<YOUTUBE_VIDEO_ID_HERE>
 
-Redirects to the raw video url.
+Redirects to the raw video url. One of -v or -u must be provided. If both are provided,
+-u will be ignored.
 
-- v: required - Url or ID of the video, same as the url parameter of GET /v1/video
+- v - Url or ID of the video, same as the url parameter of GET /v1/video
+- u - The base64-encoded URL to a video URL supported by yt-dlp (e.g. YouTube video, tweet with embedded video)
 ```
